@@ -1,0 +1,16 @@
+.add-form{
+  max-width: 300px;
+  margin:auto;
+  display:flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.add-form input{
+  margin-bottom: 15px;
+  width:100%;
+}
+
+.input-des{
+  padding-bottom:70px;
+}
