@@ -1,16 +1,11 @@
 const Product=require('../models/product')
 
 exports.addProduct=(req,res,next)=>{
-  const title=req.body.title
-  const price=req.body.price
-  const description=req.body.description
-  const imageUrl=req.body.imageUrl
-
   const product=new Product({
-    title:title,
-    price:price,
-    description:description,
-    imageUrl:imageUrl})
+    title:req.body.title,
+    price:req.body.price,
+    description:req.body.description,
+    imageUrl:req.body.imageUrl})
     product.save()
     .then(result=>{
       res.status(200).send(product)
@@ -23,10 +18,19 @@ exports.addProduct=(req,res,next)=>{
   
 }
 
-exports.getProduct=(req,res,next)=>{
-  Product.find().then(result=>{
-    res.send(result)
-}).catch(err=>{
-  console.log(err)
-})
+exports.updateProduct=(req,res,next)=>{
+  const productID=req.params.productID
+  Product.findById(productID).then(product=>{
+    product.title=req.body.title
+    product.price=req.body.price
+    product.description=req.body.description
+    product.imageUrl=req.body.imageUrl
+    product.save().then(result=>{
+      console.log('product updated sucessfully')
+      res.status(200).send(product)
+    })
+    .catch(err=>{
+      console.log(err)
+    })  
+  })
 }

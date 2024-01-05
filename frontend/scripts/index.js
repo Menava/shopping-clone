@@ -6,9 +6,9 @@ async function fetchData(url){
   return data
 }
 
-async function showProducts(){
+async function showProducts(editing){
   const cardEle=document.querySelector('.home-cards')
-  const products=await fetchData('admin/get-product')
+  const products=await fetchData('products')
   products.forEach(product=>{
     cardEle.innerHTML+=`
     <div>
@@ -16,14 +16,34 @@ async function showProducts(){
     <h2>${product.title}</h2>
     <p>${product.description}</p>
     <p>$${product.price}</p>
-    <a href="#" class="btn"> Details</a>
-    <a href="#" class="btn"> Add to Cart </a>
+    <a href='${editing?`add-product.html?productID=${product._id}`:`product.html?productID=${product._id}`}' class="btn"> ${editing?'Edit':'Details'}</a>
+    <a href="#" class="btn">  ${editing?'DELETE':'Add to Cart'} </a>
     </div>
     `
   })
 }
 
-async function addProducts(){
+async function showProduct(prodID){
+  const prodEle=document.querySelector('.product')
+  const product=await fetchData(`products/${prodID}`)
+  prodEle.innerHTML=
+  `
+    <h2>${product.title}</h2>
+    <img src="${product.imageUrl}" alt="No Image" onerror="this.src='./images/deals.jpg'">
+    <p>$${product.price}</p>
+    <p>${product.description}</p>
+    <a class="btn">Add to Cart</a>
+  `
+}
+
+async function addProducts(productID){
+  if(productID){
+    const product=await fetchData(`products/${productID}`)
+    document.querySelector('[name="title"]').value=product.title
+    document.querySelector('[name="imageUrl"]').value=product.imageUrl
+    document.querySelector('[name="price"]').value=product.price
+    document.querySelector('[name="description"]').value=product.description
+  }
   document.querySelector('.add-form').addEventListener('submit',(e)=>{
     e.preventDefault()
     const title=document.querySelector('[name="title"]').value
@@ -31,7 +51,7 @@ async function addProducts(){
     const price=document.querySelector('[name="price"]').value
     const description=document.querySelector('[name="description"]').value
 
-    fetch(`${apiUrl}admin/add-product`,{
+    fetch(`${apiUrl}${productID?`admin/update-product/${productID}`:'admin/add-product'}`,{
       method:'POST',
       body:JSON.stringify({
         title:title,
@@ -47,25 +67,30 @@ async function addProducts(){
       if(!response.ok){
         throw new Error('Something went wrong')
       }
-      window.location.replace("http://127.0.0.1:5500/frontend/index.html")
+      window.location.replace("index.html")
     })
     
     
   })
 }
 
-
 function run(){
   const currentPath=window.location.pathname
+  let productID
   switch(currentPath) {
     case '/frontend/index.html':
-      showProducts()
+      showProducts(false)
       break;
     case '/frontend/add-product.html':
-      addProducts()
+      productID=window.location.search.split('=')[1]
+      addProducts(productID)
       break;
     case '/frontend/admin-product.html':
-      console.log('In admin product')
+      showProducts(true)
+      break;
+    case '/frontend/product.html':
+      productID=window.location.search.split('=')[1]
+      showProduct(productID)
       break;
     default:
       // code block

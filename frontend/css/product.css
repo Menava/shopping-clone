@@ -1,0 +1,12 @@
+.product{
+  max-width: 500px;
+  margin:auto;
+  display:flex;
+  flex-direction: column;
+  row-gap: 20px;
+  align-items: center;
+}
+
+.product img{
+  width:100%;
+}

@@ -4,6 +4,6 @@ const router=express.Router()
 
 router.post('/add-product',adminController.addProduct)
 
-router.get('/get-product',adminController.getProduct)
+router.post('/update-product/:productID',adminController.updateProduct)
 
 module.exports=router
