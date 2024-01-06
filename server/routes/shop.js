@@ -12,4 +12,8 @@ router.get('/getCart',shopController.getCart)
 
 router.get('/deleteCart/:productID',shopController.deleteCart)
 
+router.get('/order',shopController.getOrder)
+
+router.get('/addOrder',shopController.addOrder)
+
 module.exports=router

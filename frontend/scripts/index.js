@@ -8,7 +8,6 @@ async function fetchData(url){
 
 function cardClicked(e){
   if(e.target.textContent.trim()==='DELETE'){
-    console.log()
     fetch(`${apiUrl}${`admin/delete-product/${e.target.dataset.pid}`}`).then(result=>location.reload())
   }
   if(e.target.textContent.trim()==="Add to Cart"){
@@ -53,23 +52,32 @@ function cartClicked(e){
   {
     fetch(`${apiUrl}deleteCart/${e.target.dataset.proid}`).then(result=>location.reload())
   }
+  else if(e.target.textContent.trim()==='Order Now'){
+    fetch(`${apiUrl}addOrder`).then(window.location.replace("order.html"))
+  }
 }
 
 async function showCart(){
   const itemCard=document.querySelector('.cart')
   const cart=await fetchData('getCart')
-  cart.forEach(item=>{
-    console.log(item.productID._id)
-    itemCard.innerHTML+=
-    `
-      <div>
-        <p>${item.productID.title}</p>
-        <p>Quantity:${item.quantity}</p>
-        <a href="#" class="btn" data-proID=${item.productID._id}> DELETE</a>
-      </div>
-    `
-  })
   
+  if(cart.length==0){
+    itemCard.innerHTML='Your Cart is empty'
+  }
+  else{
+    cart.forEach(item=>{
+      console.log(item.productID._id)
+      itemCard.innerHTML+=
+      `
+        <div>
+          <p>${item.productID.title}</p>
+          <p>Quantity:${item.quantity}</p>
+          <a href="#" class="btn" data-proID=${item.productID._id}> DELETE</a>
+        </div>
+      `
+    })
+    itemCard.innerHTML+=`<button class="btn"> Order Now</button>`
+  }
 }
 
 async function addProducts(productID){
@@ -105,8 +113,28 @@ async function addProducts(productID){
       }
       window.location.replace("index.html")
     })
+  })
+}
+
+async function showOrder(){
+  const ordersEle=document.querySelector('.orders')
+  const orders=await fetchData('order')
+  orders.forEach(order=>{
+    let newDiv=document.createElement('div')
+    let newTitle=document.createElement('h2')
+    newTitle.textContent=`Order - #${order._id}`
+    let newUl=document.createElement('ul')
     
-    
+    order.items.forEach(item=>{
+      let newLi=document.createElement('li')
+      newLi.classList.add('btn')
+      newLi.textContent=`${item.product.title}(${item.quantity})`
+      newUl.appendChild(newLi)
+    })
+
+    newDiv.appendChild(newTitle)
+    newDiv.appendChild(newUl)
+    ordersEle.appendChild(newDiv)
   })
 }
 
@@ -132,6 +160,9 @@ function run(){
       document.querySelector('.cart').addEventListener('click',cartClicked)
       showCart()
       break;
+    case '/frontend/order.html':
+      showOrder()
+      break
     default:
       // code block
   }
