@@ -5,6 +5,7 @@ exports.addProduct=(req,res,next)=>{
     title:req.body.title,
     price:req.body.price,
     description:req.body.description,
+    user:req.user,
     imageUrl:req.body.imageUrl})
     product.save()
     .then(result=>{
@@ -33,4 +34,13 @@ exports.updateProduct=(req,res,next)=>{
       console.log(err)
     })  
   })
+}
+
+exports.deleteProduct=(req,res,next)=>{
+  const productID=req.params.productID
+  Product.findByIdAndDelete(productID).then(result=>{
+    console.log('Product deleted')
+    res.status(200).send('product has been deleted')
+  }).catch(err=>
+    console.log(err))
 }

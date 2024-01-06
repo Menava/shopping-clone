@@ -6,6 +6,17 @@ async function fetchData(url){
   return data
 }
 
+function cardClicked(e){
+  if(e.target.textContent.trim()==='DELETE'){
+    console.log()
+    fetch(`${apiUrl}${`admin/delete-product/${e.target.dataset.pid}`}`).then(result=>location.reload())
+  }
+  if(e.target.textContent.trim()==="Add to Cart"){
+    fetch(`${apiUrl}${`add-to-cart/${e.target.dataset.pid}`}`).then(result=>result.text().then(result=>console.log(result)))
+  }
+
+}
+
 async function showProducts(editing){
   const cardEle=document.querySelector('.home-cards')
   const products=await fetchData('products')
@@ -17,10 +28,11 @@ async function showProducts(editing){
     <p>${product.description}</p>
     <p>$${product.price}</p>
     <a href='${editing?`add-product.html?productID=${product._id}`:`product.html?productID=${product._id}`}' class="btn"> ${editing?'Edit':'Details'}</a>
-    <a href="#" class="btn">  ${editing?'DELETE':'Add to Cart'} </a>
+    <a href="#" class='btn' data-pid=${product._id}> ${editing?'DELETE':'Add to Cart'} </a>
     </div>
     `
   })
+  cardEle.addEventListener('click',cardClicked)
 }
 
 async function showProduct(prodID){
@@ -34,6 +46,13 @@ async function showProduct(prodID){
     <p>${product.description}</p>
     <a class="btn">Add to Cart</a>
   `
+}
+
+function cartClicked(e){
+  if(e.target.textContent.trim()==='DELETE')
+  {
+    console.log('dete')
+  }
 }
 
 async function addProducts(productID){
@@ -91,6 +110,9 @@ function run(){
     case '/frontend/product.html':
       productID=window.location.search.split('=')[1]
       showProduct(productID)
+      break;
+    case '/frontend/cart.html':
+      document.querySelector('.cart').addEventListener('click',cartClicked)
       break;
     default:
       // code block
