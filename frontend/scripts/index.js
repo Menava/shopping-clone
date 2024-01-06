@@ -51,7 +51,7 @@ async function showProduct(prodID){
 function cartClicked(e){
   if(e.target.textContent.trim()==='DELETE')
   {
-    fetch(`${apiUrl}deleteCart/${e.target.dataset.proid}`).then(result=>result.text()).then(result=>console.log(result))
+    fetch(`${apiUrl}deleteCart/${e.target.dataset.proid}`).then(result=>location.reload())
   }
 }
 
