@@ -10,4 +10,6 @@ router.get('/add-to-cart/:productID',shopController.addCart)
 
 router.get('/getCart',shopController.getCart)
 
+router.get('/deleteCart/:productID',shopController.deleteCart)
+
 module.exports=router

@@ -33,4 +33,10 @@ userSchema.methods.addToCart=function(productID){
 
 }
 
+userSchema.methods.deleteCart=function(productID){
+  const productIndex=this.cart.items.findIndex(item=>item.productID.toString()===productID.toString())
+  this.cart.items.splice(productIndex,1)
+  return this.save()
+}
+
 module.exports=mongoose.model('User',userSchema)

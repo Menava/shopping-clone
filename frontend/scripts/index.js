@@ -51,8 +51,25 @@ async function showProduct(prodID){
 function cartClicked(e){
   if(e.target.textContent.trim()==='DELETE')
   {
-    console.log('dete')
+    fetch(`${apiUrl}deleteCart/${e.target.dataset.proid}`).then(result=>result.text()).then(result=>console.log(result))
   }
+}
+
+async function showCart(){
+  const itemCard=document.querySelector('.cart')
+  const cart=await fetchData('getCart')
+  cart.forEach(item=>{
+    console.log(item.productID._id)
+    itemCard.innerHTML+=
+    `
+      <div>
+        <p>${item.productID.title}</p>
+        <p>Quantity:${item.quantity}</p>
+        <a href="#" class="btn" data-proID=${item.productID._id}> DELETE</a>
+      </div>
+    `
+  })
+  
 }
 
 async function addProducts(productID){
@@ -113,6 +130,7 @@ function run(){
       break;
     case '/frontend/cart.html':
       document.querySelector('.cart').addEventListener('click',cartClicked)
+      showCart()
       break;
     default:
       // code block
