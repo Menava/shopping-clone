@@ -1,0 +1,24 @@
+.content-container form{
+  max-width: 500px;
+  margin:auto;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 20px;
+  border:1px solid black;
+  padding:60px 0;
+}
+
+.content-container input{
+  padding:5px 10px;
+}
+
+.content-container input::placeholder{
+  text-align: center;
+  text-transform:capitalize
+  ;
+}
+
+.content-container button{
+  padding:7px 30px;
+}

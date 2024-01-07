@@ -1,17 +1,37 @@
   const express=require('express')
+  const session=require('express-session')
   const mongoose=require('mongoose')
   const cors = require('cors');
 
   const adminRoutes=require('./routes/admin')
   const shopRoutes=require('./routes/shop')
+  const authRoutes=require('./routes/auth')
   const User=require('./models/user')
 
   const bodyParser=require('body-parser')
 
   app=express()
-  app.use(cors())
+
+  app.enable('trust proxy',1);
+
+  app.use(cors({
+    origin:"http://127.0.0.1:5500",
+    methods: ["POST", "PUT", "GET", "OPTIONS", "HEAD"],
+    credentials: true,
+  }))
+
   app.use(bodyParser.urlencoded({extended:false}))
   app.use(bodyParser.json()); 
+  app.use(session({
+    secret:'this is a secret',
+    resave:false,
+    saveUninitialized:false,
+    cookie: {
+      sameSite: 'none',
+      httpOnly: false,
+      secure: false,
+  }
+  }))
   
   app.use((req,res,next)=>{
     User.findOne().then(user=>{
@@ -22,6 +42,7 @@
 
   app.use('/admin',adminRoutes)
   app.use(shopRoutes)
+  app.use(authRoutes)
 
 
 
