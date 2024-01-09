@@ -1,4 +1,11 @@
-exports.login=(req,res,next)=>{
+exports.postLogin=(req,res,next)=>{
   req.session.isloggedin=true
-  res.send(req.session.sessionID)
+  console.log(req.session.id)
+  res.send(req.session.id)
+}
+
+exports.getLogin=(req,res,next)=>{
+  req.session.isloggedin=true
+  console.log(req.session.id)
+  res.send({msg:'hello'})
 }

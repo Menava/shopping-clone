@@ -2,34 +2,28 @@
   const session=require('express-session')
   const mongoose=require('mongoose')
   const cors = require('cors');
+  const bodyParser=require('body-parser')
 
   const adminRoutes=require('./routes/admin')
   const shopRoutes=require('./routes/shop')
   const authRoutes=require('./routes/auth')
   const User=require('./models/user')
 
-  const bodyParser=require('body-parser')
-
   app=express()
-
-  app.enable('trust proxy',1);
+  app.use(bodyParser.urlencoded({extended:false}))
+  app.use(bodyParser.json()); 
 
   app.use(cors({
-    origin:"http://127.0.0.1:5500",
-    methods: ["POST", "PUT", "GET", "OPTIONS", "HEAD"],
+    origin:"http://localhost:5500",
     credentials: true,
   }))
 
-  app.use(bodyParser.urlencoded({extended:false}))
-  app.use(bodyParser.json()); 
   app.use(session({
     secret:'this is a secret',
     resave:false,
     saveUninitialized:false,
     cookie: {
-      sameSite: 'none',
-      httpOnly: false,
-      secure: false,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
   }
   }))
   

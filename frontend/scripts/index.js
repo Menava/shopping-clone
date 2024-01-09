@@ -143,16 +143,14 @@ async function loginSubmit(e){
   const username=document.querySelector('[name="username"]').value
   const password=document.querySelector('[name="password"]').value
 
-  fetch(`${apiUrl}login`,{
+
+  fetch(`${apiUrl}login`,
+  {
     method:'POST',
-    mode: "cors",
-    credentials:'include',
-    body:JSON.stringify({username:username,password:password}),
-    headers:{
-      "Content-type": "application/json; charset=UTF-8"
-    }
-  }).then(result=>console.log(result))
-    // .then(result=>console.log(result))
+    headers:{"Content-Type":"application/json"},
+    credentials:"include"
+  }).then(result=>result.text())
+    .then(result=>console.log(result))
 }
 
 function run(){
