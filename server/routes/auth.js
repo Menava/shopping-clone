@@ -4,7 +4,6 @@ const AuthController=require('../controllers/auth')
 
 router.post('/login',AuthController.postLogin)
 
-router.get('/login',AuthController.getLogin)
-
+router.post('/signup',AuthController.postSignup)
 
 module.exports=router

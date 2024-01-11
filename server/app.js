@@ -38,16 +38,8 @@
   app.use(shopRoutes)
   app.use(authRoutes)
 
-
-
   mongoose.connect('mongodb+srv://menava:menava@cluster0.l1mkcvo.mongodb.net/shop?retryWrites=true&w=majority')
   .then(()=>{
-    User.findOne().then(result=>{
-      if(!result){
-        const user=new User({name:'test',email:'test',cart:{}})
-        user.save()
-      }
-    })
     app.listen(3000);
     console.log('Successful')
   })

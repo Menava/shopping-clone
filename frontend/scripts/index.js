@@ -1,17 +1,19 @@
 const apiUrl='http://localhost:3000/'
 
 async function fetchData(url){
-  const dataPromise=await fetch(`${apiUrl}${url}`)
+  const dataPromise=await fetch(`${apiUrl}${url}`,{
+    credentials:"include"
+  })
   const data=await dataPromise.json()
   return data
 }
 
 function cardClicked(e){
   if(e.target.textContent.trim()==='DELETE'){
-    fetch(`${apiUrl}${`admin/delete-product/${e.target.dataset.pid}`}`).then(result=>location.reload())
+    fetch(`${apiUrl}${`admin/delete-product/${e.target.dataset.pid}`}`,{credentials:"include"}).then(result=>location.reload())
   }
   if(e.target.textContent.trim()==="Add to Cart"){
-    fetch(`${apiUrl}${`add-to-cart/${e.target.dataset.pid}`}`).then(result=>result.text().then(result=>console.log(result)))
+    fetch(`${apiUrl}${`add-to-cart/${e.target.dataset.pid}`}`,{credentials:"include"}).then(result=>result.text().then(result=>console.log(result)))
   }
 
 }
@@ -50,10 +52,10 @@ async function showProduct(prodID){
 function cartClicked(e){
   if(e.target.textContent.trim()==='DELETE')
   {
-    fetch(`${apiUrl}deleteCart/${e.target.dataset.proid}`).then(result=>location.reload())
+    fetch(`${apiUrl}deleteCart/${e.target.dataset.proid}`,{credentials:"include"}).then(result=>location.reload())
   }
   else if(e.target.textContent.trim()==='Order Now'){
-    fetch(`${apiUrl}addOrder`).then(window.location.replace("order.html"))
+    fetch(`${apiUrl}addOrder`,{credentials:"include"}).then(window.location.replace("order.html"))
   }
 }
 
@@ -97,6 +99,7 @@ async function addProducts(productID){
 
     fetch(`${apiUrl}${productID?`admin/update-product/${productID}`:'admin/add-product'}`,{
       method:'POST',
+      credentials:"include",
       body:JSON.stringify({
         title:title,
         imageUrl:imageUrl,
@@ -148,7 +151,33 @@ async function loginSubmit(e){
   {
     method:'POST',
     headers:{"Content-Type":"application/json"},
-    credentials:"include"
+    credentials:"include",
+    body:JSON.stringify({
+      email:username,
+      password:password
+    })
+  }).then(result=>result.text())
+    .then(result=>console.log(result))
+}
+
+
+async function signupSubmit(e){
+  e.preventDefault()
+  const name=document.querySelector('[name="name"]').value
+  const email=document.querySelector('[name="email"]').value
+  const password=document.querySelector('[name="password"]').value
+
+
+  fetch(`${apiUrl}signup`,
+  {
+    method:'POST',
+    headers:{"Content-Type":"application/json"},
+    credentials:"include",
+    body:JSON.stringify({
+      name:name,
+      email:email,
+      password:password
+    })
   }).then(result=>result.text())
     .then(result=>console.log(result))
 }
@@ -188,6 +217,11 @@ function run(){
       buildNav()
       const loginFormEle=document.querySelector('.login-form')
       loginFormEle.addEventListener('submit',loginSubmit)
+      break;
+    case '/frontend/signup.html':
+      buildNav()
+      const signupFormEle=document.querySelector('.signup')
+      signupFormEle.addEventListener('submit',signupSubmit)
       break;
     default:
       // code block
