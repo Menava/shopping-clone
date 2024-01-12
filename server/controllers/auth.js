@@ -17,19 +17,20 @@ exports.postLogin=(req,res,next)=>{
 }
 
 exports.postSignup=(req,res,next)=>{
-  const name=req.body.name
-  const password=req.body.password
-  const email=req.body.email
-
-  User.findOne({'email':email}).then(result=>{
+  User.findOne({'email':req.body.email}).then(result=>{
     if(result)
     {
       return res.status(500).send('User already in database')
     }
-
-    bcrypt.hash(password, 12).then(hashedPassword=>{
-      const user=new User({name:name,password:hashedPassword,email:email,cart:{items:[]}})
+    bcrypt.hash(req.body.password, 12).then(hashedPassword=>{
+      const user=new User({name:req.body.name,password:hashedPassword,email:req.body.email,cart:{items:[]}})
       user.save().then(result=>res.send('User has been created'))
     })  
   });
+}
+
+exports.postLogout=(req,res,next)=>{
+  req.session.destroy(result=>{
+    res.status(200).send('Logged out')
+  })
 }

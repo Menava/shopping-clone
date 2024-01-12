@@ -146,7 +146,6 @@ async function loginSubmit(e){
   const username=document.querySelector('[name="username"]').value
   const password=document.querySelector('[name="password"]').value
 
-
   fetch(`${apiUrl}login`,
   {
     method:'POST',
@@ -156,8 +155,15 @@ async function loginSubmit(e){
       email:username,
       password:password
     })
-  }).then(result=>result.text())
-    .then(result=>console.log(result))
+  }).then(result=>{
+    if(!result.ok){
+      return result.text().then(result=>console.log(result))
+    }
+    return result.json().then(data=>{
+      document.cookie=`user=${JSON.stringify(data)}`
+      window.location.replace('index.html')
+    })
+  }).catch(err=>console.log(err))
 }
 
 
@@ -178,8 +184,24 @@ async function signupSubmit(e){
       email:email,
       password:password
     })
-  }).then(result=>result.text())
-    .then(result=>console.log(result))
+  }).then(result=>{
+    if(result.ok){
+      return window.location.replace("login.html")
+    }
+    return result.text()
+  })
+  .then(result=>console.log(result))
+}
+
+async function logoutEvent(e){
+  fetch(`${apiUrl}logout`,
+  {
+    credentials:"include",
+  }).then(result=>{
+    document.cookie='user=null;Max-Age=0'
+    window.location.replace('login.html')
+
+  })
 }
 
 function run(){
@@ -288,9 +310,7 @@ function buildNav(){
   navEle.appendChild(ulEle1)
 
   ulEle.appendChild(mainLiEle)
-  ulEle.appendChild(mainLiEle1)
-  ulEle.appendChild(mainLiEle2)
-  ulEle.appendChild(mainLiEle3)
+ 
 
   mainLiEle.appendChild(mainLinkEle)
   mainLiEle1.appendChild(mainLinkEle1)
@@ -308,5 +328,18 @@ function buildNav(){
   rightLiEle2.appendChild(rightLinkEle1)
   rightLinkEle1.appendChild(rightIconEle2)
   rightLiEle3.appendChild(rightIconEle3)
+
+  if(document.cookie){
+    let user=JSON.parse(document.cookie.split('=')[1])
+    if(user){
+      ulEle.appendChild(mainLiEle1)
+      ulEle.appendChild(mainLiEle2)
+      ulEle.appendChild(mainLiEle3)
+
+      rightLinkEle1.removeAttribute('href')
+      rightLinkEle1.addEventListener('click',logoutEvent);
+    }
+  }
+  
 }
 

@@ -4,8 +4,6 @@ const Order=require('../models/order')
 
 exports.getProducts=(req,res,next)=>{
   Product.find().then(result=>{
-    console.log(req.session.id)
-    console.log(req.session.user)
     res.send(result)
 }).catch(err=>{
   console.log(err)
