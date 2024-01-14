@@ -2,6 +2,7 @@ const User=require('../models/user')
 const bcrypt = require('bcrypt');
 const crypto=require('crypto')
 const sendMail=require('../utils/mail')
+const {validationResult }=require('express-validator')
 
 exports.postLogin=(req,res,next)=>{
   User.findOne({'email':req.body.email}).then(user=>{
@@ -19,16 +20,14 @@ exports.postLogin=(req,res,next)=>{
 }
 
 exports.postSignup=(req,res,next)=>{
-  User.findOne({'email':req.body.email}).then(result=>{
-    if(result)
-    {
-      return res.status(500).send('User already in database')
-    }
-    bcrypt.hash(req.body.password, 12).then(hashedPassword=>{
+  const errors=validationResult(req)
+  if(!errors.isEmpty()){
+    return res.status(500).send(errors)
+  }
+    return bcrypt.hash(req.body.password, 12).then(hashedPassword=>{
       const user=new User({name:req.body.name,password:hashedPassword,email:req.body.email,cart:{items:[]}})
       user.save().then(result=>res.send('User has been created'))
     })  
-  });
 }
 
 exports.postLogout=(req,res,next)=>{
