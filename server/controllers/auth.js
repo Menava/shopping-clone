@@ -1,6 +1,7 @@
 const User=require('../models/user')
 const bcrypt = require('bcrypt');
 const crypto=require('crypto')
+const sendMail=require('../utils/mail')
 
 exports.postLogin=(req,res,next)=>{
   User.findOne({'email':req.body.email}).then(user=>{
@@ -49,6 +50,7 @@ exports.postResetPassword=(req,res,next)=>{
       user.resetToken=token
       user.tokenExpiration=Date.now()+3600000
       return user.save().then(result=>{
+        sendMail(token)
         return res.send(token)
       })
     })

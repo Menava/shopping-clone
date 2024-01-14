@@ -224,7 +224,7 @@ async function resetPasswordEvent(e){
     return result.text()
   })
   .then(result=>{
-    window.location.replace(`confirm-reset.html?token=${result}`)
+    console.log(result)
   })
   .catch(err=>{
     console.log(err)
