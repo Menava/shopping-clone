@@ -1,5 +1,6 @@
   const express=require('express')
   const session=require('express-session')
+  const MongoDBStore = require('connect-mongodb-session')(session);
   const mongoose=require('mongoose')
   const cors = require('cors');
   const bodyParser=require('body-parser')
@@ -18,10 +19,16 @@
     credentials: true,
   }))
 
+  const store = new MongoDBStore({
+    uri: 'mongodb+srv://menava:menava@cluster0.l1mkcvo.mongodb.net/shop',
+    collection: 'mySessions'
+  });
+
   app.use(session({
     secret:'this is a secret',
     resave:false,
     saveUninitialized:false,
+    store:store,
     cookie: {
       maxAge: 7 * 24 * 60 * 60 * 1000,
   }

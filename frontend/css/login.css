@@ -22,3 +22,12 @@
 .content-container button{
   padding:7px 30px;
 }
+
+.content-container div{
+  display:flex;
+  column-gap: 30px;
+}
+
+.content-container a{
+  color:green
+}

@@ -204,6 +204,60 @@ async function logoutEvent(e){
   })
 }
 
+async function resetPasswordEvent(e){
+  e.preventDefault()
+
+  fetch(`${apiUrl}reset-password`,
+  {
+    credentials:'include',
+    headers:{"Content-Type":"application/json"},
+    method:'POST',
+    body:JSON.stringify({
+      email:document.querySelector('[name="email"]').value
+    })
+  }).then(result=>{
+    if(!result.ok){
+      return result.text().then(result=>{
+        throw new Error(result)
+      })
+    }
+    return result.text()
+  })
+  .then(result=>{
+    window.location.replace(`confirm-reset.html?token=${result}`)
+  })
+  .catch(err=>{
+    console.log(err)
+  })
+}
+
+async function confirmResetEvent(e,token){
+  e.preventDefault()
+  fetch(`${apiUrl}reset-password/${window.location.search.split('=')[1]}`,{
+    credentials:'include',
+    method:'POST',
+    headers:{'Content-Type':"application/json"},
+    body:JSON.stringify({
+      password:document.querySelector('[name="password"]').value,
+      confirmPassword:document.querySelector('[name="confirmPassword"]').value
+    })
+  })
+  .then(result=>{
+    if(!result.ok){
+      return result.text().then(result=>{
+        throw new Error(result)
+      })
+    }
+    return result.text()
+  })
+  .then(result=>{
+    return window.location.replace('login.html')
+  })
+  .catch(err=>{
+    console.log(err)
+  })
+}
+
 function run(){
   const currentPath=window.location.pathname
   let productID
@@ -244,6 +298,16 @@ function run(){
       buildNav()
       const signupFormEle=document.querySelector('.signup')
       signupFormEle.addEventListener('submit',signupSubmit)
+      break;
+    case '/frontend/reset-password.html':
+      buildNav()
+      const resetFormEle=document.querySelector('.reset-form')
+      resetFormEle.addEventListener('submit',resetPasswordEvent)
+      break;
+    case '/frontend/confirm-reset.html':
+      buildNav()
+      const confirmResetFormEle=document.querySelector('.confirm-reset-form')
+      confirmResetFormEle.addEventListener('submit',confirmResetEvent)
       break;
     default:
       // code block
